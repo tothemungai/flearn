@@ -2,6 +2,8 @@ import { Container, Grid, Paper, styled, Typography } from "@material-ui/core";
 import { useMemo, useState } from "react";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
+import RenderLeafs from "./Leafs/RenderLeafs";
+import HoveringToolbar from "./Menus/HoveringToolbar";
 const initialEditorValue = [
   {
     type: "paragraph",
@@ -30,8 +32,9 @@ const NoteEditor = () => {
         value={value}
         onChange={(newValue) => setValue(newValue)}
       >
+        <HoveringToolbar />
         <StyledEditorPaper elevation={0} variant="outlined">
-          <Editable />
+          <Editable renderLeaf={RenderLeafs} />
         </StyledEditorPaper>
       </Slate>
     </Container>
