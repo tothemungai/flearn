@@ -1,5 +1,7 @@
+import NoteEditor from "./NoteEditor/NoteEditor";
+
 function App() {
-  return <div></div>;
+  return <NoteEditor />;
 }
 
 export default App;
