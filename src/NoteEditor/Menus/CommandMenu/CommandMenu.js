@@ -55,7 +55,7 @@ const CommandMenu = ({ target, search = "", setTarget }) => {
                   e.preventDefault();
                   Transforms.select(editor, target);
                   Transforms.delete(editor);
-                  insertBlock(editor, command.type);
+                  insertBlock(editor, command.type, command.meta);
                   setTarget(null);
                 }}
               >

@@ -1,10 +1,12 @@
 import { Editor, Transforms, Node as SlateNode } from "slate";
 
-export const insertBlock = (editor, type) => {
+export const insertBlock = (editor, type, meta = {}) => {
   const block = {
     type,
-    children: [{ text: "" }],
+    children: [{ text: " " }],
+    ...meta,
   };
 
   Transforms.insertNodes(editor, block);
+  Transforms.move(editor);
 };

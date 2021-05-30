@@ -10,10 +10,15 @@ import configureCommandMenu from "./Menus/CommandMenu/configureCommandMenu";
 import HoveringToolbar from "./Menus/HoveringToolbar";
 import { insertBlock } from "./blocks/blocks";
 import withBlocks from "./Plugins/withBlocks";
+import withFlashcards from "./Plugins/withFlashcards";
 const initialEditorValue = [
   {
     type: "paragraph",
-    children: [{ text: "A line of text in a paragraph." }],
+    children: [
+      {
+        text: "A line of text in a paragraph. ",
+      },
+    ],
   },
 ];
 
@@ -24,7 +29,10 @@ const StyledEditorPaper = styled(Paper)({
 });
 
 const NoteEditor = () => {
-  const editor = useMemo(() => withBlocks(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withFlashcards(withBlocks(withReact(createEditor()))),
+    []
+  );
   const [value, setValue] = useState(initialEditorValue);
   const [target, setTarget] = useState();
   const [search, setSearch] = useState("");

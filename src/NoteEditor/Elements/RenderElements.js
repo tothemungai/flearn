@@ -1,4 +1,5 @@
 import { Typography } from "@material-ui/core";
+import SimpleFlashcard from "./Flashcard/SimpleFlashcard";
 
 const RenderElements = ({ attributes, element, children }) => {
   switch (element.type) {
@@ -8,8 +9,10 @@ const RenderElements = ({ attributes, element, children }) => {
           {children}
         </Typography>
       );
+    case "flashcard":
+      return <SimpleFlashcard {...{ attributes, element, children }} />;
     default:
-      return <p {...attributes}>{children}</p>;
+      return <span {...attributes}>{children}</span>;
   }
 };
 
