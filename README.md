@@ -23,6 +23,6 @@ To allow for elaboration of concepts
 
 For easy grouping of notes. We can't use a heirarchical folder structure since notes may cut across topics.
 
-### Bidirectional Page linking
+### Bidirectional Note linking
 
 To avoid monolithic notes, a note can link to multiple other notes for further elaboration

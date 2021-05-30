@@ -5,6 +5,11 @@ const commands = [
     displayName: "Simple Flashcard",
     meta: { question: "", answer: "", attempts: [] },
   },
+  {
+    type: "tag",
+    displayName: "Tag",
+    meta: { tagName: "" },
+  },
 ];
 
 export default commands;

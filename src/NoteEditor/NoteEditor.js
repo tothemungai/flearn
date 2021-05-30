@@ -11,6 +11,7 @@ import HoveringToolbar from "./Menus/HoveringToolbar";
 import { insertBlock } from "./blocks/blocks";
 import withBlocks from "./Plugins/withBlocks";
 import withFlashcards from "./Plugins/withFlashcards";
+import withTags from "./Plugins/withTags";
 const initialEditorValue = [
   {
     type: "paragraph",
@@ -30,7 +31,7 @@ const StyledEditorPaper = styled(Paper)({
 
 const NoteEditor = () => {
   const editor = useMemo(
-    () => withFlashcards(withBlocks(withReact(createEditor()))),
+    () => withTags(withFlashcards(withBlocks(withReact(createEditor())))),
     []
   );
   const [value, setValue] = useState(initialEditorValue);
