@@ -11,11 +11,18 @@ Research has proved that the above techniques are effective
 
 ## Features
 
-### Spaced retrieval
-Spaced retrieval can be done in app using flashcards and effective spacing algorithms
+### Flashcards
 
-### Elaboration
-An in app editor allows for elaboration of most concepts by the user
+To aid in spaced retrieval and generation
 
-### Generation
-Clozes
+### Rich text editor
+
+To allow for elaboration of concepts
+
+### Tagging
+
+For easy grouping of notes. We can't use a heirarchical folder structure since notes may cross cut across topics.
+
+### Bidirectional Page linking
+
+To avoid monolithic notes, a note can link to multiple other notes for further elaboration
