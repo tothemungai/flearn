@@ -21,7 +21,7 @@ To allow for elaboration of concepts
 
 ### Tagging
 
-For easy grouping of notes. We can't use a heirarchical folder structure since notes may cross cut across topics.
+For easy grouping of notes. We can't use a heirarchical folder structure since notes may cut across topics.
 
 ### Bidirectional Page linking
 
