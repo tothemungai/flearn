@@ -10,6 +10,14 @@ const commands = [
     displayName: "Tag",
     meta: { tagName: "" },
   },
+  {
+    type: "note-link",
+    displayName: "Note Link",
+    meta: {
+      id: "",
+      name: "",
+    },
+  },
 ];
 
 export default commands;

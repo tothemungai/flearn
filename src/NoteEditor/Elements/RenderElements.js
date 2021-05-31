@@ -1,5 +1,6 @@
 import { Typography } from "@material-ui/core";
 import SimpleFlashcard from "./Flashcard/SimpleFlashcard";
+import NoteLink from "./NoteLink/NoteLink";
 import Tag from "./Tag/Tag";
 
 const RenderElements = ({ attributes, element, children }) => {
@@ -14,6 +15,8 @@ const RenderElements = ({ attributes, element, children }) => {
       return <SimpleFlashcard {...{ attributes, element, children }} />;
     case "tag":
       return <Tag {...{ attributes, element, children }} />;
+    case "note-link":
+      return <NoteLink {...{ attributes, element, children }} />;
     default:
       return <span {...attributes}>{children}</span>;
   }

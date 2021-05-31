@@ -1,7 +1,7 @@
 import { Container, Grid, Paper, styled, Typography } from "@material-ui/core";
 import isHotkey from "is-hotkey";
-import { useMemo, useState } from "react";
-import { createEditor, Range as SlateRange } from "slate";
+import { useEffect, useMemo, useState } from "react";
+import { createEditor, Range as SlateRange, Transforms } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
 import RenderElements from "./Elements/RenderElements";
 import RenderLeafs from "./Leafs/RenderLeafs";
@@ -12,6 +12,9 @@ import { insertBlock } from "./blocks/blocks";
 import withBlocks from "./Plugins/withBlocks";
 import withFlashcards from "./Plugins/withFlashcards";
 import withTags from "./Plugins/withTags";
+import { NoteManager } from "../Note/NoteManager";
+import { useLocation, useParams } from "react-router";
+import withNoteLink from "./Plugins/withNoteLinks";
 const initialEditorValue = [
   {
     type: "paragraph",
@@ -31,12 +34,22 @@ const StyledEditorPaper = styled(Paper)({
 
 const NoteEditor = () => {
   const editor = useMemo(
-    () => withTags(withFlashcards(withBlocks(withReact(createEditor())))),
+    () =>
+      withNoteLink(
+        withTags(withFlashcards(withBlocks(withReact(createEditor()))))
+      ),
     []
   );
   const [value, setValue] = useState(initialEditorValue);
   const [target, setTarget] = useState();
   const [search, setSearch] = useState("");
+  const { id: noteId } = useParams();
+  const location = useLocation();
+
+  useEffect(() => {
+    Transforms.select(editor, [0]);
+    setValue(NoteManager.getNote(noteId));
+  }, [location]);
   return (
     <Container maxWidth="sm">
       <Grid container direction="row" justify="center">
