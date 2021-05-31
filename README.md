@@ -11,7 +11,7 @@ Research has proved that the above techniques are effective
 
 ## Features
 
-### Flashcards
+### Flashcards && Flashcard queue
 
 To aid in spaced retrieval and generation
 
@@ -26,3 +26,7 @@ For easy grouping of notes. We can't use a heirarchical folder structure since n
 ### Bidirectional Note linking
 
 To avoid monolithic notes, a note can link to multiple other notes for further elaboration
+
+### Graph view
+
+So one can see how notes are linked
