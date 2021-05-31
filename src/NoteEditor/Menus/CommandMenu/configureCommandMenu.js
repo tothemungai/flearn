@@ -27,7 +27,6 @@ const configureCommandMenu = (editor) => {
   const afterRange = Editor.range(editor, start, after);
   const afterText = Editor.string(editor, afterRange);
   const afterMatch = afterText.match(/^(\w*|$)/);
-  //   debugger;
   if (beforeMatch && afterMatch) {
     return [exactRange, beforeMatch[1], 0];
   } else {

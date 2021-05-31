@@ -10,7 +10,7 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import { Note } from "@material-ui/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
@@ -21,6 +21,16 @@ const NoteLink = ({ attributes, children, element }) => {
   const [note, setNote] = useState(element);
   const editor = useSlate();
   const history = useHistory();
+
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    NoteManager.getAllNotes().then(({ data }) => {
+      const { notes } = Boolean(data.notes) ? data : { notes: [] };
+
+      setNotes(notes);
+    });
+  }, []);
   return (
     <>
       <span {...attributes}>
@@ -42,7 +52,7 @@ const NoteLink = ({ attributes, children, element }) => {
           <DialogTitle>Notes</DialogTitle>
           <DialogContent>
             <List component="nav">
-              {NoteManager.getAllNotes().map((note) => {
+              {notes.map((note) => {
                 return (
                   <ListItem
                     button

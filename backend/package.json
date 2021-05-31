@@ -1,0 +1,15 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for flearn",
+  "main": "server.js",
+  "author": "mungai brian",
+  "license": "MIT",
+  "dependencies": {
+    "@types/nedb": "^1.8.11",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nedb": "^1.8.0"
+  }
+}

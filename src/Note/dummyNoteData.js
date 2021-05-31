@@ -1,6 +1,6 @@
 const dummyNoteData = [
   {
-    id: 0,
+    id: "0",
     name: "0 Note",
     data: [
       {
@@ -14,7 +14,7 @@ const dummyNoteData = [
     ],
   },
   {
-    id: 1,
+    id: "1",
     name: "1 Note",
     data: [
       {
