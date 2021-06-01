@@ -22,6 +22,8 @@ import { useHistory, useLocation, useParams } from "react-router";
 import withNoteLink from "./Plugins/withNoteLinks";
 import { v4 } from "uuid";
 import NoteName from "./NoteName";
+import withSpaceAfterInline from "./Plugins/withSpaceAfterInline";
+import NoteList from "../Notes/NoteList";
 const initialEditorValue = [
   {
     type: "paragraph",
@@ -42,8 +44,10 @@ const StyledEditorPaper = styled(Paper)({
 const NoteEditor = () => {
   const editor = useMemo(
     () =>
-      withNoteLink(
-        withTags(withFlashcards(withBlocks(withReact(createEditor()))))
+      withSpaceAfterInline(
+        withNoteLink(
+          withTags(withFlashcards(withBlocks(withReact(createEditor()))))
+        )
       ),
     []
   );
@@ -81,6 +85,9 @@ const NoteEditor = () => {
           <NoteName {...{ note, setNote }} />
         </Grid>
         <Grid item>
+          <NoteList />
+        </Grid>
+        <Grid item>
           <Button
             variant="contained"
             color="primary"
@@ -115,8 +122,8 @@ const NoteEditor = () => {
             const [target, search, index] = configureCommandMenu(editor);
             setTarget(target);
             setSearch(search ? search : "");
-            setValue(newValue);
           }
+          setValue(newValue);
           console.log(newValue);
         }}
       >

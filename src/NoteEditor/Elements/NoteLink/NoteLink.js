@@ -32,51 +32,49 @@ const NoteLink = ({ attributes, children, element }) => {
     });
   }, []);
   return (
-    <>
-      <span {...attributes}>
-        <Chip
-          size={"small"}
-          label={Boolean(note.name === "") ? "undefined" : note.name}
-          icon={<Note />}
-          color={Boolean(note.name === "") ? "secondary" : "primary"}
-          clickable
-          variant="outlined"
-          onClick={() => setOpen(true)}
-        />
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          fullWidth={true}
-          maxWidth={"xs"}
-        >
-          <DialogTitle>Notes</DialogTitle>
-          <DialogContent>
-            <List component="nav">
-              {notes.map((note) => {
-                return (
-                  <ListItem
-                    button
-                    onClick={(e) => {
-                      const path = ReactEditor.findPath(editor, element);
-                      Transforms.setNodes(editor, { ...note }, { at: path });
-                      setNote(note);
-                      setOpen(false);
-                    }}
-                  >
-                    <ListItemText primary={note.name} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpen(false)}>Close</Button>
-            <Button onClick={() => history.push(`/note/${note.id}`)}>Go</Button>
-          </DialogActions>
-        </Dialog>
-      </span>
+    <span {...attributes}>
+      <Chip
+        size={"small"}
+        label={Boolean(note.name === "") ? "undefined" : note.name}
+        icon={<Note />}
+        color={Boolean(note.name === "") ? "secondary" : "primary"}
+        clickable
+        variant="outlined"
+        onClick={() => setOpen(true)}
+      />
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth={true}
+        maxWidth={"xs"}
+      >
+        <DialogTitle>Notes</DialogTitle>
+        <DialogContent>
+          <List component="nav">
+            {notes.map((note) => {
+              return (
+                <ListItem
+                  button
+                  onClick={(e) => {
+                    const path = ReactEditor.findPath(editor, element);
+                    Transforms.setNodes(editor, { ...note }, { at: path });
+                    setNote(note);
+                    setOpen(false);
+                  }}
+                >
+                  <ListItemText primary={note.name} />
+                </ListItem>
+              );
+            })}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Close</Button>
+          <Button onClick={() => history.push(`/note/${note.id}`)}>Go</Button>
+        </DialogActions>
+      </Dialog>
       <span>{children}</span>
-    </>
+    </span>
   );
 };
 
