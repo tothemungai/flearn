@@ -5,7 +5,13 @@ import { ReactEditor, useSlate } from "slate-react";
 import { insertBlock } from "../../blocks/blocks";
 import commands from "./commands";
 
-const CommandMenu = ({ target, search = "", setTarget }) => {
+const CommandMenu = ({
+  target,
+  search = "",
+  setTarget,
+  filteredCommands = [],
+  index,
+}) => {
   const ref = useRef();
   const editor = useSlate();
   useEffect(() => {
@@ -22,9 +28,6 @@ const CommandMenu = ({ target, search = "", setTarget }) => {
     }
   }, [target]);
 
-  const filteredCommands = commands.filter((c) =>
-    c.displayName.toLowerCase().startsWith(search.toLowerCase())
-  );
   return (
     <Portal container={document.body}>
       <Card
@@ -47,10 +50,11 @@ const CommandMenu = ({ target, search = "", setTarget }) => {
               <ListItemText primary={"Not found"} />
             </ListItem>
           )}
-          {filteredCommands.map((command) => {
+          {filteredCommands.map((command, commandIndex) => {
             return (
               <ListItem
                 button
+                selected={index === commandIndex}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   Transforms.select(editor, target);

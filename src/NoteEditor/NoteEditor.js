@@ -24,6 +24,8 @@ import { v4 } from "uuid";
 import NoteName from "./NoteName";
 import withSpaceAfterInline from "./Plugins/withSpaceAfterInline";
 import NoteList from "../Notes/NoteList";
+import keyHandler from "./KeyHandler/keyHandler";
+import commands from "./Menus/CommandMenu/commands";
 const initialEditorValue = [
   {
     type: "paragraph",
@@ -53,9 +55,19 @@ const NoteEditor = () => {
   const [value, setValue] = useState([]);
   const [target, setTarget] = useState();
   const [search, setSearch] = useState("");
+  const [index, setIndex] = useState(0);
+  const [filteredCommands, setFilteredCommands] = useState(commands);
   const { id: noteId } = useParams();
   const location = useLocation();
   const history = useHistory();
+
+  useEffect(() => {
+    setFilteredCommands(
+      commands.filter((c) =>
+        c.displayName.toLowerCase().startsWith(search.toLowerCase())
+      )
+    );
+  }, [search]);
 
   useEffect(() => {
     Transforms.deselect(editor);
@@ -64,7 +76,16 @@ const NoteEditor = () => {
         const { note } = Boolean(data.note)
           ? data
           : {
-              note: { data: initialEditorValue, name: "New Note", id: noteId },
+              note: {
+                data: [
+                  {
+                    type: "paragraph",
+                    children: [{ text: "" }],
+                  },
+                ],
+                name: "New Note",
+                id: noteId,
+              },
             };
         setNote(note);
         setValue(note.data);
@@ -126,9 +147,23 @@ const NoteEditor = () => {
         }}
       >
         <HoveringToolbar />
-        <CommandMenu target={target} search={search} setTarget={setTarget} />
+        <CommandMenu
+          target={target}
+          search={search}
+          setTarget={setTarget}
+          index={index}
+          filteredCommands={filteredCommands}
+        />
         <StyledEditorPaper elevation={0} variant="outlined">
-          <Editable renderElement={RenderElements} renderLeaf={RenderLeafs} />
+          <Editable
+            onKeyDown={(e) =>
+              target &&
+              keyHandler(e, setIndex, index, filteredCommands, editor, target)
+            }
+            renderElement={RenderElements}
+            renderLeaf={RenderLeafs}
+            placeholder={"Type / for commands"}
+          />
         </StyledEditorPaper>
       </Slate>
     </Container>
