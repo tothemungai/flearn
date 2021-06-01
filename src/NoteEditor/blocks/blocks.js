@@ -9,4 +9,7 @@ export const insertBlock = (editor, type, meta = {}) => {
 
   Transforms.insertNodes(editor, block);
   Transforms.move(editor);
+  if (editor.isInline(block)) {
+    Transforms.insertText(editor, " ");
+  }
 };

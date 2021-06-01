@@ -30,7 +30,7 @@ const Tag = ({ element, children, attributes }) => {
         size={"small"}
         label={tagName === "" ? "undefined" : tagName}
         variant="outlined"
-        color={"primary"}
+        color={tagName === "" ? "secondary" : "primary"}
         onClick={() => setOpen(true)}
       />
       <Popper open={open} anchorEl={anchorEl.current}>
