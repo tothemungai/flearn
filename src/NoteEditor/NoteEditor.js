@@ -58,6 +58,7 @@ const NoteEditor = () => {
   const history = useHistory();
 
   useEffect(() => {
+    Transforms.deselect(editor);
     NoteManager.getNote(noteId)
       .then(({ data }) => {
         const { note } = Boolean(data.note)
@@ -65,7 +66,6 @@ const NoteEditor = () => {
           : {
               note: { data: initialEditorValue, name: "New Note", id: noteId },
             };
-        Transforms.deselect(editor);
         setNote(note);
         setValue(note.data);
       })

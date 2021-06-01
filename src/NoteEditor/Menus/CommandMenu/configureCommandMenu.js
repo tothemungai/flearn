@@ -1,37 +1,32 @@
-import { Editor, Range as SlateRange } from "slate";
+import { Editor, Range as SlateRange, Text, Transforms } from "slate";
 import { useSlate } from "slate-react";
+import { produce } from "immer";
+const MAX_SEARCH_LENGTH = 10;
 
 const configureCommandMenu = (editor) => {
   const { selection } = editor;
-  const [start] = SlateRange.edges(editor.selection);
-  const wordBefore = Editor.before(editor, start, { unit: "word" });
-  //we get the exact range /(search-term)
-  const before = wordBefore && Editor.before(editor, wordBefore);
-  const wordBeforeRange = before && Editor.range(editor, before, start);
-  const wordBeforeText =
-    wordBeforeRange && Editor.string(editor, wordBeforeRange);
-  const wordBeforeMatch = wordBeforeText && wordBeforeText.match(/\/(\w*)/);
-  const exactRange = wordBeforeMatch && {
-    ...wordBeforeRange,
-    anchor: {
-      ...wordBeforeRange.anchor,
-      offset: wordBeforeRange.anchor.offset + wordBeforeMatch.index || 0,
-    },
-  };
-  const exactRangeText = exactRange && Editor.string(editor, exactRange);
+  //check if the current text node has a /
+  const [node, path] = Editor.node(editor, selection);
+  //we check if the text node is marked (menu should not appear)
+  if (!Text.isText(node)) return [null, null, 0];
 
-  const beforeRange = before && Editor.range(editor, before, start);
-  const beforeText = beforeRange && Editor.string(editor, beforeRange);
-  const beforeMatch = beforeText && beforeText.match(/\/(\w*)/);
-  const after = Editor.after(editor, start);
-  const afterRange = Editor.range(editor, start, after);
-  const afterText = Editor.string(editor, afterRange);
-  const afterMatch = afterText.match(/^(\w*|$)/);
-  if (beforeMatch && afterMatch) {
-    return [exactRange, beforeMatch[1], 0];
-  } else {
+  const match = Editor.string(editor, path).match(/\/(\w*)/);
+  if (!match) return [null, null, 0];
+  //if match has a . or is too long mark the node so a menu wont appear
+  if (
+    match[1].length > MAX_SEARCH_LENGTH ||
+    Boolean(Editor.string(editor, path).match(/\./))
+  ) {
     return [null, null, 0];
   }
+
+  //now we need to determine the range that will be overwritten on insert
+  //range = from where the / starts to the currets position
+  const range = produce(selection, (draft) => {
+    draft.anchor.offset = match.index;
+  });
+
+  return [range, match[1], 0];
 };
 
 export default configureCommandMenu;
