@@ -59,6 +59,7 @@ const Tag = ({ element, children, attributes }) => {
                     setOpen(false);
                   }
                 }}
+                autoFocus
               />
             </DialogContent>
             <DialogActions>

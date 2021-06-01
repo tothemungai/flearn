@@ -93,7 +93,7 @@ const NoteEditor = () => {
       .catch(console.log);
   }, [location]);
   return (
-    <Container maxWidth="sm">
+    <>
       <Grid
         container
         direction="row"
@@ -102,20 +102,6 @@ const NoteEditor = () => {
       >
         <Grid item>
           <NoteName {...{ note, setNote }} />
-        </Grid>
-        <Grid item>
-          <NoteList />
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              history.push(`/note/${v4()}`);
-            }}
-          >
-            New Note
-          </Button>
         </Grid>
         <Grid item>
           <Button
@@ -166,7 +152,7 @@ const NoteEditor = () => {
           />
         </StyledEditorPaper>
       </Slate>
-    </Container>
+    </>
   );
 };
 
