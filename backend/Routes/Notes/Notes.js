@@ -33,4 +33,14 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/tags", async (req, res) => {
+  try {
+    const { tags } = req.body;
+    const notes = await NoteManager.getByTags(tags);
+    res.send({ success: true, notes });
+  } catch (error) {
+    res.send({ success: false, msg: error.message });
+  }
+});
+
 module.exports = router;

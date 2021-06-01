@@ -30,6 +30,23 @@ class NoteManager {
       });
     });
   }
+
+  static async getByTags(tags = []) {
+    const tagQuery = tags.map((tag) => {
+      return {
+        "data.children.type": "tag",
+        "data.children.tagName": tag.tagName,
+      };
+    });
+
+    return new Promise((resolve, reject) => {
+      db.notes.find({ $or: tagQuery }, {}, (error, documents) => {
+        if (error) reject(error);
+
+        resolve(documents);
+      });
+    });
+  }
 }
 
 module.exports = NoteManager;

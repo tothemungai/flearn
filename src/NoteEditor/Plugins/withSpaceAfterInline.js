@@ -13,7 +13,6 @@ const withSpaceAfterInline = (editor) => {
           return;
         }
       } else {
-        debugger;
         Transforms.insertText(editor, " ", { at: path.focus });
         return;
       }

@@ -44,10 +44,8 @@ const StyledEditorPaper = styled(Paper)({
 const NoteEditor = () => {
   const editor = useMemo(
     () =>
-      withSpaceAfterInline(
-        withNoteLink(
-          withTags(withFlashcards(withBlocks(withReact(createEditor()))))
-        )
+      withNoteLink(
+        withTags(withFlashcards(withBlocks(withReact(createEditor()))))
       ),
     []
   );

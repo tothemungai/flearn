@@ -51,10 +51,11 @@ const NoteLink = ({ attributes, children, element }) => {
         <DialogTitle>Notes</DialogTitle>
         <DialogContent>
           <List component="nav">
-            {notes.map((note) => {
+            {notes.map((note, index) => {
               return (
                 <ListItem
                   button
+                  key={note.tagName + index}
                   onClick={(e) => {
                     const path = ReactEditor.findPath(editor, element);
                     Transforms.setNodes(editor, { ...note }, { at: path });

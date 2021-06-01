@@ -14,4 +14,8 @@ export class NoteManager {
   static async saveNote(note) {
     return axios.post(baseUrl + "save", { note });
   }
+
+  static async getByTags(tags = []) {
+    return axios.post(baseUrl + "tags", { tags });
+  }
 }
