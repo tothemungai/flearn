@@ -1,5 +1,7 @@
 import {
   Button,
+  Card,
+  CardContent,
   Chip,
   DialogContent,
   DialogTitle,
@@ -7,17 +9,31 @@ import {
   List,
   ListItem,
   ListItemText,
+  makeStyles,
   Paper,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import isHotkey from "is-hotkey";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { NoteManager } from "../Note/NoteManager";
 import { v4 } from "uuid";
+import { Add } from "@material-ui/icons";
+
+const useStyles = makeStyles((theme) => ({
+  paperTitle: {
+    display: "flex",
+    alignItems: "center",
+  },
+  tagsSearch: {
+    margin: `${theme.spacing(2.5)}px 0px 0px 0px`,
+  },
+}));
 const NoteSideBar = () => {
   const [activeTags, setActiveTags] = useState([]);
   const [notes, setNotes] = useState([]);
+  const classes = useStyles();
   useEffect(() => {
     if (Boolean(activeTags.length === 0)) {
       NoteManager.getAllNotes().then(({ data }) => {
@@ -34,64 +50,71 @@ const NoteSideBar = () => {
   const history = useHistory();
   return (
     <>
-      <Paper>
-        <DialogTitle>NOTES</DialogTitle>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            history.push(`/note/${v4()}`);
-          }}
-        >
-          New Note
-        </Button>
-        <DialogContent>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              {activeTags.map((tag) => {
-                return (
-                  <Chip
-                    label={tag.tagName}
-                    clickable
-                    color={"primary"}
-                    onDelete={() =>
-                      setActiveTags(
-                        activeTags.filter(
-                          (activeTag) => activeTag.tagName !== tag.tagName
-                        )
-                      )
-                    }
-                  />
-                );
-              })}
+      <Card>
+        <CardContent>
+          <Grid container alignItems="center">
+            <Grid item>
+              <Typography>NOTES</Typography>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Tags"
-                onKeyDown={(e) => {
-                  if (isHotkey("Enter", e)) {
-                    setActiveTags([...activeTags, { tagName: e.target.value }]);
-                  }
+            <Grid item>
+              <Add
+                onClick={() => {
+                  history.push(`/note/${v4()}`);
                 }}
               />
             </Grid>
           </Grid>
-          <List component="nav">
-            {notes.map((note) => {
+          <Grid item xs={12}>
+            {activeTags.map((tag) => {
               return (
-                <ListItem
-                  button
-                  onClick={(e) => {
-                    history.push(`/note/${note.id}`);
-                  }}
-                >
-                  <ListItemText primary={note.name} />
-                </ListItem>
+                <Chip
+                  size={"small"}
+                  label={tag.tagName}
+                  clickable
+                  color={"primary"}
+                  onDelete={() =>
+                    setActiveTags(
+                      activeTags.filter(
+                        (activeTag) => activeTag.tagName !== tag.tagName
+                      )
+                    )
+                  }
+                />
               );
             })}
-          </List>
-        </DialogContent>
-      </Paper>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth={true}
+              classes={{ root: classes.tagsSearch }}
+              size={"small"}
+              label="Tags"
+              variant="outlined"
+              onKeyDown={(e) => {
+                if (isHotkey("Enter", e)) {
+                  setActiveTags([...activeTags, { tagName: e.target.value }]);
+                }
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <List component="nav">
+              {notes.map((note) => {
+                return (
+                  <ListItem
+                    button
+                    onClick={(e) => {
+                      history.push(`/note/${note.id}`);
+                    }}
+                  >
+                    <ListItemText primary={note.name} />
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Grid>
+        </CardContent>
+      </Card>
     </>
   );
 };
