@@ -19,6 +19,15 @@ const withBlocks = (editor) => {
       if (match) {
         const [block, path] = match;
         const start = Editor.start(editor, path);
+        //if this is the 2nd block after the title do nothing. We don't want to move other blocks to the title
+        if (
+          !Editor.isEditor(block) &&
+          SlateElement.isElement(block) &&
+          Point.equals(selection.anchor, start) &&
+          path[0] === 1
+        ) {
+          return;
+        }
 
         if (
           !Editor.isEditor(block) &&

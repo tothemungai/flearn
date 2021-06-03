@@ -4,10 +4,11 @@ import {
   Grid,
   makeStyles,
   Paper,
+  Portal,
   styled,
   Typography,
 } from "@material-ui/core";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   createEditor,
   Editor,
@@ -32,6 +33,7 @@ import keyHandler from "./KeyHandler/keyHandler";
 import commands from "./Menus/CommandMenu/commands";
 import EditorTitle from "./EditorComponents/EditorTitle";
 import withLayout from "./Plugins/withLayout";
+import NoteSideBar from "../Notes/NoteSideBar";
 
 const useStyles = makeStyles((theme) => ({
   editor: {
@@ -59,8 +61,7 @@ const NoteEditor = () => {
   const [filteredCommands, setFilteredCommands] = useState(commands);
   const { id: noteId } = useParams();
   const location = useLocation();
-  const history = useHistory();
-  const classes = useStyles();
+  const [numberOfChanges, setNumberOfChanges] = useState(0);
 
   useEffect(() => {
     setFilteredCommands(
@@ -88,7 +89,6 @@ const NoteEditor = () => {
                     children: [{ text: "" }],
                   },
                 ],
-                name: "New Note",
                 id: noteId,
               },
             };
@@ -97,6 +97,14 @@ const NoteEditor = () => {
       })
       .catch(console.log);
   }, [location]);
+
+  const resetNumberOfChanges = () => {
+    setNumberOfChanges(0);
+  };
+
+  const incrementNumberOfChanges = () => {
+    setNumberOfChanges(numberOfChanges + 1);
+  };
   return (
     <Slate
       editor={editor}
@@ -108,9 +116,24 @@ const NoteEditor = () => {
           setSearch(search ? search : "");
         }
         setValue(newValue);
-        console.log(newValue);
+        //save to db after every 10 changes
+        if (numberOfChanges >= 10) {
+          NoteManager.saveNote({ ...note, data: value }).catch(console.log);
+          resetNumberOfChanges();
+        } else {
+          incrementNumberOfChanges();
+        }
       }}
     >
+      <Portal container={document.getElementById("sidebar")}>
+        <NoteSideBar
+          {...{
+            note,
+            value,
+            numberOfChanges,
+          }}
+        />
+      </Portal>
       <HoveringToolbar />
       <CommandMenu
         target={target}
@@ -122,8 +145,17 @@ const NoteEditor = () => {
 
       <Editable
         onKeyDown={(e) =>
-          target &&
-          keyHandler(e, setIndex, index, filteredCommands, editor, target)
+          keyHandler(
+            e,
+            setIndex,
+            index,
+            filteredCommands,
+            editor,
+            target,
+            note,
+            value,
+            resetNumberOfChanges
+          )
         }
         renderElement={RenderElements}
         renderLeaf={RenderLeafs}

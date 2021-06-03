@@ -20,7 +20,7 @@ function App() {
         <Container classes={{ root: classes.container }}>
           <Grid container justify="center" spacing={theme.spacing(1)}>
             <Grid item sm={3}>
-              <NoteSideBar />
+              <div id="sidebar" />
             </Grid>
             <Grid item xs={12} sm={9}>
               <Switch>

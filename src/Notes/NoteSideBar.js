@@ -19,7 +19,8 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { NoteManager } from "../Note/NoteManager";
 import { v4 } from "uuid";
-import { Add } from "@material-ui/icons";
+import { Add, FiberManualRecord } from "@material-ui/icons";
+import produce from "immer";
 
 const useStyles = makeStyles((theme) => ({
   paperTitle: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     margin: `${theme.spacing(2.5)}px 0px 0px 0px`,
   },
 }));
-const NoteSideBar = () => {
+const NoteSideBar = ({ note, value, numberOfChanges }) => {
   const [activeTags, setActiveTags] = useState([]);
   const [notes, setNotes] = useState([]);
   const classes = useStyles();
@@ -54,12 +55,30 @@ const NoteSideBar = () => {
         <CardContent>
           <Grid container alignItems="center">
             <Grid item>
-              <Typography>NOTES</Typography>
+              <Typography>NOTES {numberOfChanges}</Typography>
             </Grid>
             <Grid item>
               <Add
                 onClick={() => {
-                  history.push(`/note/${v4()}`);
+                  const newNoteId = v4();
+                  history.push(`/note/${newNoteId}`);
+                  setNotes(
+                    produce(notes, (draft) => {
+                      draft.push({
+                        data: [
+                          {
+                            type: "title",
+                            children: [{ text: "" }],
+                          },
+                          {
+                            type: "paragraph",
+                            children: [{ text: "" }],
+                          },
+                        ],
+                        id: newNoteId,
+                      });
+                    })
+                  );
                 }}
               />
             </Grid>
@@ -99,15 +118,35 @@ const NoteSideBar = () => {
           </Grid>
           <Grid item xs={12}>
             <List component="nav">
-              {notes.map((note) => {
+              {notes.map((noteFromServer) => {
+                //check if this is the active current node
+                let title = "Untitled";
+                if (noteFromServer.id === note.id) {
+                  const [localTitle] = (value.length > 0 &&
+                    value[0].type === "title" &&
+                    value[0].children) || [{ text: "Untitled" }];
+                  title = localTitle;
+                } else {
+                  const [localTitle] = (noteFromServer.data[0].type ===
+                    "title" &&
+                    noteFromServer.data[0].children) || [{ text: "Untitled" }];
+                  title = localTitle;
+                }
                 return (
                   <ListItem
                     button
                     onClick={(e) => {
-                      history.push(`/note/${note.id}`);
+                      history.push(`/note/${noteFromServer.id}`);
                     }}
                   >
-                    <ListItemText primary={note.name} />
+                    <ListItemText
+                      primary={
+                        title.text.trim() === "" ? "New Note" : title.text
+                      }
+                    />
+                    {numberOfChanges !== 0 && noteFromServer.id === note.id && (
+                      <FiberManualRecord />
+                    )}
                   </ListItem>
                 );
               })}
