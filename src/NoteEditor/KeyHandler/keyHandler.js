@@ -2,36 +2,25 @@ import { Note } from "@material-ui/icons";
 import isHotkey from "is-hotkey";
 import { Transforms } from "slate";
 import { NoteManager } from "../../Note/NoteManager";
+import store from "../../Store/store";
 import { insertBlock } from "../blocks/blocks";
+import { toJS } from "mobx";
 
-const keyHandler = (
-  e,
-  setIndex,
-  index,
-  filteredCommands,
-  editor,
-  target,
-  note,
-  value,
-  resetNumberOfChanges
-) => {
-  if (Boolean(target)) {
+const keyHandler = (e, editor, note, value, resetNumberOfChanges) => {
+  if (Boolean(store.hoveringCommandMenu)) {
     if (isHotkey("up", e)) {
       e.preventDefault();
-      const newIndex = index <= 0 ? 0 : index - 1;
-      setIndex(newIndex);
+      store.decrementHoveringCommandMenuIndex();
     }
     if (isHotkey("down", e)) {
       e.preventDefault();
-      const newIndex = index >= filteredCommands.length - 1 ? 0 : index + 1;
-      setIndex(newIndex);
+      store.incrementHoveringCommandMenuIndex();
     }
     if (isHotkey("Enter", e)) {
       e.preventDefault();
-      if (!Boolean(filteredCommands[index])) return;
-      if (!Boolean(target)) return;
-      const block = filteredCommands[index];
-      Transforms.select(editor, target);
+      if (!store.isHoveringCommandMenuIndexValid()) return;
+      const block = store.getBlockAtIndex();
+      Transforms.select(editor, toJS(store.hoveringCommandMenu));
       Transforms.delete(editor);
       insertBlock(editor, block.type, block.meta);
     }

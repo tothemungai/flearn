@@ -1,16 +1,12 @@
 import {
-  Button,
   Card,
   CardContent,
   Chip,
-  DialogContent,
-  DialogTitle,
   Grid,
   List,
   ListItem,
   ListItemText,
   makeStyles,
-  Paper,
   TextField,
   Typography,
 } from "@material-ui/core";

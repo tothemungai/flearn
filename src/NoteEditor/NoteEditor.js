@@ -1,13 +1,4 @@
-import {
-  Button,
-  Container,
-  Grid,
-  makeStyles,
-  Paper,
-  Portal,
-  styled,
-  Typography,
-} from "@material-ui/core";
+import { Portal } from "@material-ui/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   createEditor,
@@ -26,24 +17,16 @@ import withBlocks from "./Plugins/withBlocks";
 import withFlashcards from "./Plugins/withFlashcards";
 import withTags from "./Plugins/withTags";
 import { NoteManager } from "../Note/NoteManager";
-import { useHistory, useLocation, useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import withNoteLink from "./Plugins/withNoteLinks";
-import NoteName from "./EditorComponents/NoteName";
 import keyHandler from "./KeyHandler/keyHandler";
 import commands from "./Menus/CommandMenu/commands";
-import EditorTitle from "./EditorComponents/EditorTitle";
 import withLayout from "./Plugins/withLayout";
 import NoteSideBar from "../Notes/NoteSideBar";
-
-const useStyles = makeStyles((theme) => ({
-  editor: {
-    padding: theme.spacing(1),
-    minHeight: "100%",
-    flexGrow: 1,
-  },
-}));
-
-const NoteEditor = () => {
+import store from "../Store/store";
+import { observer } from "mobx-react-lite";
+import decorateWithPlaceholders from "./Plugins/decorateWithPlaceholders";
+const NoteEditor = observer(() => {
   const editor = useMemo(
     () =>
       withLayout(
@@ -55,21 +38,9 @@ const NoteEditor = () => {
   );
   const [note, setNote] = useState("New Note");
   const [value, setValue] = useState([]);
-  const [target, setTarget] = useState();
-  const [search, setSearch] = useState("");
-  const [index, setIndex] = useState(0);
-  const [filteredCommands, setFilteredCommands] = useState(commands);
   const { id: noteId } = useParams();
   const location = useLocation();
   const [numberOfChanges, setNumberOfChanges] = useState(0);
-
-  useEffect(() => {
-    setFilteredCommands(
-      commands.filter((c) =>
-        c.displayName.toLowerCase().startsWith(search.toLowerCase())
-      )
-    );
-  }, [search]);
 
   useEffect(() => {
     Transforms.deselect(editor);
@@ -111,9 +82,8 @@ const NoteEditor = () => {
       value={value}
       onChange={(newValue) => {
         if (editor.selection && SlateRange.isCollapsed(editor.selection)) {
-          const [target, search, index] = configureCommandMenu(editor);
-          setTarget(target);
-          setSearch(search ? search : "");
+          const [target, search] = configureCommandMenu(editor);
+          store.configureHoveringCommandMenu(target, search ? search : "");
         }
         setValue(newValue);
         //save to db after every 10 changes
@@ -135,74 +105,19 @@ const NoteEditor = () => {
         />
       </Portal>
       <HoveringToolbar />
-      <CommandMenu
-        target={target}
-        search={search}
-        setTarget={setTarget}
-        index={index}
-        filteredCommands={filteredCommands}
-      />
+      <CommandMenu />
 
       <Editable
         onKeyDown={(e) =>
-          keyHandler(
-            e,
-            setIndex,
-            index,
-            filteredCommands,
-            editor,
-            target,
-            note,
-            value,
-            resetNumberOfChanges
-          )
+          keyHandler(e, editor, note, value, resetNumberOfChanges)
         }
         renderElement={RenderElements}
         renderLeaf={RenderLeafs}
         placeholder={"Type / for commands"}
-        decorate={([node, path]) => {
-          if (!Editor.isEditor(node)) {
-            const [parent] = Editor.above(editor, { at: path });
-            if (
-              parent.type === "title" &&
-              Editor.string(editor, path).trim() === ""
-            ) {
-              return [
-                {
-                  anchor: {
-                    path,
-                    offset: 0,
-                  },
-
-                  focus: {
-                    path,
-                    offset: 0,
-                  },
-                  placeholderTitle: true,
-                },
-              ];
-            }
-          }
-          if (editor.selection != null) {
-            if (
-              !Editor.isEditor(node) &&
-              Editor.string(editor, [path[0]]) === "" &&
-              SlateRange.includes(editor.selection, path) &&
-              SlateRange.isCollapsed(editor.selection)
-            ) {
-              return [
-                {
-                  ...editor.selection,
-                  placeholder: true,
-                },
-              ];
-            }
-          }
-          return [];
-        }}
+        decorate={(block) => decorateWithPlaceholders(block, editor)}
       />
     </Slate>
   );
-};
+});
 
 export default NoteEditor;

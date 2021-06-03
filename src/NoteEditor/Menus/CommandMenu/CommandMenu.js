@@ -2,16 +2,14 @@ import { Card, List, ListItem, ListItemText, Portal } from "@material-ui/core";
 import { useEffect, useRef } from "react";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
+import store from "../../../Store/store";
 import { insertBlock } from "../../blocks/blocks";
 import commands from "./commands";
+import { observer } from "mobx-react-lite";
 
-const CommandMenu = ({
-  target,
-  search = "",
-  setTarget,
-  filteredCommands = [],
-  index,
-}) => {
+const CommandMenu = observer(() => {
+  const { hoveringCommandMenu: target, filteredCommands } = store;
+  const index = store.hoveringCommandMenuIndex;
   const ref = useRef();
   const editor = useSlate();
   useEffect(() => {
@@ -60,7 +58,7 @@ const CommandMenu = ({
                   Transforms.select(editor, target);
                   Transforms.delete(editor);
                   insertBlock(editor, command.type, command.meta);
-                  setTarget(null);
+                  store.hoveringCommandMenu = null;
                 }}
               >
                 <ListItemText primary={command.displayName} />
@@ -71,6 +69,6 @@ const CommandMenu = ({
       </Card>
     </Portal>
   );
-};
+});
 
 export default CommandMenu;
