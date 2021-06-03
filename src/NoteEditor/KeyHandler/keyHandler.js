@@ -17,7 +17,6 @@ const keyHandler = (e, setIndex, index, filteredCommands, editor, target) => {
     e.preventDefault();
     if (!Boolean(filteredCommands[index])) return;
     if (!Boolean(target)) return;
-    debugger;
     const block = filteredCommands[index];
     Transforms.select(editor, target);
     Transforms.delete(editor);

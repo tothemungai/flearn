@@ -10,6 +10,10 @@ const configureCommandMenu = (editor) => {
   //we check if the text node is marked (menu should not appear)
   if (!Text.isText(node)) return [null, null, 0];
 
+  //we check if the parent is a title
+  const [parent] = Editor.parent(editor, path);
+  if (parent.type === "title") return [null, null, 0];
+
   const match = Editor.string(editor, path).match(/\/(\w*)/);
   if (!match) return [null, null, 0];
   //if match has a . or is too long mark the node so a menu wont appear

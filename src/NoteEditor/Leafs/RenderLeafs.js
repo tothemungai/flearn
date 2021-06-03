@@ -22,7 +22,13 @@ const RenderLeafs = ({ attributes, leaf, children }) => {
       <>
         <DefaultLeaf {...{ attributes, leaf, children }} />
         <span
-          style={{ opacity: 0.3, position: "absolute", top: 0, width: "500px" }}
+          style={{
+            opacity: 0.3,
+            position: "absolute",
+            top: 0,
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+          }}
           contentEditable={false}
         >
           Type / to open menu
@@ -30,8 +36,27 @@ const RenderLeafs = ({ attributes, leaf, children }) => {
       </>
     );
   }
+  if (leaf.placeholderTitle) {
+    children = (
+      <>
+        <DefaultLeaf {...{ attributes, leaf, children }} />
+        <span
+          style={{
+            opacity: 0.3,
+            position: "absolute",
+            top: 0,
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+          }}
+          contentEditable={false}
+        >
+          New Note
+        </span>
+      </>
+    );
+  }
   return (
-    <span {...attributes} style={{ position: "relative", width: "100%" }}>
+    <span {...attributes} style={{ position: "relative" }}>
       {children}
     </span>
   );

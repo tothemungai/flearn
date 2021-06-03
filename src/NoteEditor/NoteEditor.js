@@ -81,7 +81,7 @@ const NoteEditor = () => {
                 data: [
                   {
                     type: "title",
-                    children: [{ text: "New Note" }],
+                    children: [{ text: "" }],
                   },
                   {
                     type: "paragraph",
@@ -129,6 +129,28 @@ const NoteEditor = () => {
         renderLeaf={RenderLeafs}
         placeholder={"Type / for commands"}
         decorate={([node, path]) => {
+          if (!Editor.isEditor(node)) {
+            const [parent] = Editor.above(editor, { at: path });
+            if (
+              parent.type === "title" &&
+              Editor.string(editor, path).trim() === ""
+            ) {
+              return [
+                {
+                  anchor: {
+                    path,
+                    offset: 0,
+                  },
+
+                  focus: {
+                    path,
+                    offset: 0,
+                  },
+                  placeholderTitle: true,
+                },
+              ];
+            }
+          }
           if (editor.selection != null) {
             if (
               !Editor.isEditor(node) &&

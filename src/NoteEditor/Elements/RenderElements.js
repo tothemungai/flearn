@@ -25,7 +25,7 @@ const RenderElements = ({ attributes, element, children }) => {
     case "note-link":
       return <NoteLink {...{ attributes, element, children }} />;
     default:
-      return <span {...attributes}>{children}</span>;
+      return <p {...attributes}>{children}</p>;
   }
 };
 
